@@ -38,4 +38,6 @@
 
 
 
-
+# ignore-list
+  .env
+  node_modules/
