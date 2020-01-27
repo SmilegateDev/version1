@@ -39,5 +39,5 @@
 
 
 # ignore-list
-  .env
+  .env  
   node_modules/
