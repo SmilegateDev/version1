@@ -7,18 +7,16 @@ const { User } = require('../models');
 const router = express.Router();
 
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
-  const { email, nick, password } = req.body;
+  const { email, nickname, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
-      req.flash('joinError', '이미 가입된 이메일입니다.');
-      return res.redirect('/map');
+      res.render('map',{joinError: '이미 가입된 이메일입니다.'});
     }
     const hash = await bcrypt.hash(password, 12);
-    console.log('testestesetsetset');
     await User.create({
       email,
-      nick,
+      nickname,
       password: hash,
     });
     return res.redirect('/');

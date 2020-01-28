@@ -8,7 +8,6 @@ const flash = require('connect-flash');
 const session = require('express-session');
 require('dotenv').config();
 
-var router = require('./routes/router');
 
 
 const pageRouter = require('./routes/page');
@@ -48,7 +47,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', router);
+app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/post', postRouter);
 app.use('/user', userRouter);

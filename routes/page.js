@@ -16,10 +16,11 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 });
 
 router.get('/', (req, res, next) => {
-    res.render('main', {
+    res.render('map', {
         title: 'NodeBird',
         user : req.user,
         loginError : req.flash('loginError'),
+        joinError : ''
     });
 });
 

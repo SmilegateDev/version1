@@ -212,10 +212,14 @@
           <input type="text" class="form-control" name="nickname" id="nickname" placeholder="닉네임" style="margin-top: 10px;">
           <input type="text" class="form-control" name="token" id="token" placeholder="활성화" style="margin-top: 10px;">
           <input type="text" class="form-control" name="gender" id="gender" placeholder="gender" style="margin-top: 10px;">
+          <% if(joinError) { %>
+            <%= joinError %>
+          <% } %>
           <input type="submit" class="btn btn-success btn-block" style="margin-top: 20px; font-size: 120%;">
         </form>
         <a href="/auth/google" class="btn btn-danger" style="display: block; margin-top: 30px; font-size: 120%;">
           <i class="fab fa-google" style="margin-right: 10px;"></i>구글 로그인
+        </a>
       </div>
     </article>
     <ul>
