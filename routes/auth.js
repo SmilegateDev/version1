@@ -12,9 +12,10 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
       req.flash('joinError', '이미 가입된 이메일입니다.');
-      return res.redirect('/join');
+      return res.redirect('/map');
     }
     const hash = await bcrypt.hash(password, 12);
+    console.log('testestesetsetset');
     await User.create({
       email,
       nick,
@@ -50,6 +51,14 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
 router.get('/logout', isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
+  res.redirect('/');
+});
+
+router.get('/google', passport.authenticate('google', { scope: [ 'profile', 'email' ]}));
+
+router.get('/google/callback', passport.authenticate('google', {
+  failureRedirect: '/',
+}), (req, res) => {
   res.redirect('/');
 });
 

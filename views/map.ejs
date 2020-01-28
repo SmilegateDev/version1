@@ -180,12 +180,12 @@
     <article style="align-content: center;">
       <div class="mainarticle">
         <img src="images/brand.png" width="150">
-        <form method="POST">
-          <input type="text" class="form-control" name="username" id="username" placeholder="아이디">
+        <form method="POST" action="/auth/login">
+          <input type="text" class="form-control" name="email" id="email" placeholder="아이디">
           <input type="password" class="form-control" name="password" id="password" placeholder="비밀번호" style="margin-top: 10px;">
-          <button type="button" class="btn btn-success btn-block" style="margin-top: 20px; font-size: 120%;">로그인</button>
+          <input type="submit" class="btn btn-success btn-block" style="margin-top: 20px; font-size: 120%;">로그인</button>
         </form>
-        <a href="#" class="btn btn-danger" style="display: block; margin-top: 30px; font-size: 120%;">
+        <a href="/auth/google" class="btn btn-danger" style="display: block; margin-top: 30px; font-size: 120%;">
           <i class="fab fa-google" style="margin-right: 10px;"></i>구글 로그인
         </a>
         <a href="#" class="btn btn-primary" style="display: block; margin-top: 5px; font-size: 120%;">
@@ -206,6 +206,16 @@
     <article style="align-content: center;">
       <div class="mainarticle">
         <img src="images/brand.png" width="150">
+        <form method="POST" action="/auth/join">
+          <input type="email" class="form-control" name="email" id="email" placeholder="이메일">
+          <input type="password" class="form-control" name="password" id="password" placeholder="비밀번호" style="margin-top: 10px;">
+          <input type="text" class="form-control" name="nickname" id="nickname" placeholder="닉네임" style="margin-top: 10px;">
+          <input type="text" class="form-control" name="token" id="token" placeholder="활성화" style="margin-top: 10px;">
+          <input type="text" class="form-control" name="gender" id="gender" placeholder="gender" style="margin-top: 10px;">
+          <input type="submit" class="btn btn-success btn-block" style="margin-top: 20px; font-size: 120%;">
+        </form>
+        <a href="/auth/google" class="btn btn-danger" style="display: block; margin-top: 30px; font-size: 120%;">
+          <i class="fab fa-google" style="margin-right: 10px;"></i>구글 로그인
       </div>
     </article>
     <ul>

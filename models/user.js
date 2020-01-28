@@ -5,20 +5,19 @@ module.exports = (sequelize, DataTypes)=>(
             allowNull : true,
             unique : true,
         },
-
-
-        nick : {
-            type : DataTypes.STRING(40),
-            allowNull : false,
-        },
-
-
+        
         password : {
             type : DataTypes.STRING(100),
             allowNull : true,
         },
 
+        nick: {
+            type : DataTypes.STRING(40),
+            allowNull : false,
+            defaultValue : 'myname',
+        },
 
+        
         provider : {
             type : DataTypes.STRING(40),
             allowNull : false,
