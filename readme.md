@@ -1,6 +1,6 @@
 # MySQL Query
   CREATE TABLE `sns`.`new_table` (
-  `id` VARCHAR(30) NOT NULL,
+  `email` VARCHAR(30) NOT NULL,
   `password` VARCHAR(100) NULL,
   `nickname` VARCHAR(10) NOT NULL,
   `token` VARCHAR(30) NOT NULL,
