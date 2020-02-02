@@ -11,12 +11,15 @@ const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
+const connect = require('./schemas');
+
 const v1 = require('./routes/v1');
 const v2 = require('./routes/v2');
 
 const app = express();
-sequelize.sync();
-passportConfig(passport);
+sequelize.sync(); // connect MySQL
+connect(); //connect mongoDB
+passportConfig(passport); //use passport module
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
