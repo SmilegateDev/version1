@@ -15,6 +15,7 @@ const connect = require('./schemas');
 
 const v1 = require('./routes/v1');
 const v2 = require('./routes/v2');
+const dbTest = require('./routes/dbTest');
 
 const app = express();
 sequelize.sync(); // connect MySQL
@@ -43,6 +44,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/dbTest',dbTest);
 app.use('/v1',v1);
 app.use('/v2',v2);
 app.use('/auth', authRouter);
