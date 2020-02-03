@@ -14,7 +14,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
       req.flash('joinError', '이미 가입된 이메일입니다.');
       return res.redirect('/join');
     }
-    const hash = await bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
     await User.create({
       email,
       nick,

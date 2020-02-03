@@ -12,7 +12,7 @@
   PRIMARY KEY (`id`),
   UNIQUE INDEX `nickname_UNIQUE` (`nickname` ASC) VISIBLE);
   
-
+&nbsp;  
 
   CREATE TABLE `sns`.`follow` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -36,8 +36,15 @@
     ON UPDATE CASCADE);
 
 
-
+&nbsp;
+&nbsp;  
 
 # ignore-list
   .env  
   node_modules/
+
+&nbsp;
+&nbsp;  
+
+# salt 암호화
+  <https://victorydntmd.tistory.com/33>
