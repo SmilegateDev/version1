@@ -6,14 +6,14 @@ const { User } = require('../models');
 
 module.exports = (passport) => {
   passport.use(new LocalStrategy({
-    usernameField: 'email',
+    usernameField: 'uid',
     passwordField: 'password',
-  }, async (email, password, done) => {
+  }, async (uid, password, done) => {
     try {
-      const exUser = await User.findOne({ where: { email } });
+      const exUser = await User.findOne({ where: { uid } });
       if (exUser) {
-        let dbPassword = exUser.dateValues.password;
-        let salt = exUser.dateValues.salt;
+        let dbPassword = exUser.password;
+        let salt = exUser.salt;
         let hash = crypto.createHash("sha512").update(password + salt).digest("hex");
         const result = (dbPassword === hash);
         

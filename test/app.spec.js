@@ -14,7 +14,7 @@ describe('Testing /test', ()=>{
             });
     });
 
-    it('POST join_test should return 200 status code', (done) => {
+    it('POST join_test should return 200 or 302 status code', (done) => {
         request(app)
              .post('/test/join_test')
              .send({
@@ -22,12 +22,27 @@ describe('Testing /test', ()=>{
                  uid : "tes12t@test12.com",
                  password : "dsfdsdsfdsfsd",
              })
-             .expect(200)
+             .expect(302)
              .end ( (err, res) => {
                  if(err) throw err;
                  done();
              });
              
      }).timeout(10000);
+
+     it('GET login_test should return 302 status code', (done) => {
+        request(app)
+             .post('/test/login_test')
+             .send({
+                 uid : "tes12t@test12.com",
+                 password : "dsfdsdsfdsfsd",
+             })
+             .expect(302)
+             .end ( (err, res) => {
+                 if(err) throw err;
+                 done();
+             });
+             
+     });
 
 });

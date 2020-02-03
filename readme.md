@@ -55,3 +55,12 @@
 # TDD
  - mocha : <https://heropy.blog/2018/03/16/mocha/>
  - supertest(API test) : <https://velog.io/@wimes/node.js-REST-API-%EC%84%9C%EB%B2%84-%EB%A7%8C%EB%93%A4%EA%B8%B0-5.-TDD-5hk418e6xu>
+
+
+
+# BUG_LIST
+---
+
+## TypeError: User.save is not a function
+  - <https://sequelize.org/master/manual/model-instances.html>  여기를 참고하면 await 를 search를 한 상태로 레코드 업데이트를 할수 있는데 await를 못씀
+  - 그래서 어쩔수 없이 두번 쿼리를 친다....

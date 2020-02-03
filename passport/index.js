@@ -31,8 +31,15 @@ module.exports = (passport) =>{
         })
             .then(user => done(null, user))
             .catch(err => done(err));
-        User.accessedAt = sequelize.literal('now()');
-        User.save();
+        //User.accessedAt = sequelize.literal('now()');
+        User.update({accessedAt: sequelize.literal('now()')}, {where: {uid : id}})
+        .then(result => {
+           res.json(result);
+        })
+        .catch(err => {
+           console.error(err);
+        });
+    
     });
 
     local(passport);
