@@ -15,7 +15,7 @@ const connect = require('./schemas');
 
 const v1 = require('./routes/v1');
 const v2 = require('./routes/v2');
-const dbTest = require('./routes/dbTest');
+const test = require('./routes/test');
 
 const app = express();
 sequelize.sync(); // connect MySQL
@@ -44,7 +44,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/dbTest',dbTest);
+app.use('/test',test);
 app.use('/v1',v1);
 app.use('/v2',v2);
 app.use('/auth', authRouter);
@@ -66,3 +66,6 @@ app.use((err, req, res, next) => {
 app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기중');
 });
+
+
+module.exports = app;

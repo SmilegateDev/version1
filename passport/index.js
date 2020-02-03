@@ -1,5 +1,6 @@
 const local = require('./localStrategy');
 const kakao = require('./kakakoStrategy');
+const sequelize = require('sequelize');
 const { User } = require('../models');
 
 module.exports = (passport) =>{
@@ -30,6 +31,8 @@ module.exports = (passport) =>{
         })
             .then(user => done(null, user))
             .catch(err => done(err));
+        User.accessedAt = sequelize.literal('now()');
+        User.save();
     });
 
     local(passport);

@@ -8,7 +8,7 @@ const { User } = require('../models');
 const router = express.Router();
 
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
-  const { email, nick, password } = req.body;
+  const { email, nickname, password } = req.body;
   try {
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
@@ -20,7 +20,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
     let hash = crypto.createHash("sha512").update(password + salt).digest("hex");
     await User.create({
       email,
-      nick,
+      nickname,
       password: hash,
       salt : salt,
     });

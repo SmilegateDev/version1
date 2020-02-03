@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes)=>(
     sequelize.define('user',{
         uid :{
             type : DataTypes.STRING(30),
-            allowNull : true,
+            allowNull : false,
             unique : true,
         },
 
@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes)=>(
         },
 
         password : {
-            type : DataTypes.STRING(64),
-            allowNull : true,
+            type : DataTypes.STRING(200),
+            allowNull : false,
         },
 
         salt : {
             type : DataTypes.STRING(64),
-            allowNull : true,
+            allowNull : false,
         },
 
 
