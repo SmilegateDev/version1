@@ -6,6 +6,9 @@ const url = require('url');
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
 
+
+const mongoPost = require('../schemas/post'); 
+
 const router = express.Router();
 
 // router.use(async (req, res, next) => {
@@ -74,21 +77,32 @@ router.get('/test', verifyToken, apiLimiter, (req, res)=>{
 
 
 router.get('/posts/my', verifyToken, apiLimiter, (req, res)=>{
-    Post.findAll({where : { userId : req.decoded.id} })
-        .then( (posts)=>{
+    // Post.findAll({where : { userId : req.decoded.id} })
+    //     .then( (posts)=>{
+    //         console.log(posts);
+    //         res.json({
+    //             code : 200,
+    //             payload : posts,
+    //         });
+    //     })
+    //     .catch( (error)=>{
+    //         console.error(error);
+    //         return res.status(500).json({
+    //             code : 500,
+    //             message : '서버 에러',
+    //         });
+    //     } );
+
+    mongoPost.find({writer : req.decoded.id}).populate('writer')
+        .then((posts) =>{
             console.log(posts);
-            res.json({
-                code : 200,
-                payload : posts,
-            });
+            res.json(posts);
         })
-        .catch( (error)=>{
-            console.error(error);
-            return res.status(500).json({
-                code : 500,
-                message : '서버 에러',
-            });
-        } );
+        .catch( (err) => {
+            console.error(err);
+            next(err);
+        });
+
 });
 
 

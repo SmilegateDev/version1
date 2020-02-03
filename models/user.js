@@ -1,23 +1,31 @@
 module.exports = (sequelize, DataTypes)=>(
     sequelize.define('user',{
-        email :{
-            type : DataTypes.STRING(40),
+        uid :{
+            type : DataTypes.STRING(30),
             allowNull : true,
             unique : true,
         },
 
-
-        nick : {
-            type : DataTypes.STRING(40),
-            allowNull : false,
-        },
-
-
-        password : {
-            type : DataTypes.STRING(100),
+        snsId : {
+            type : DataTypes.STRING(30),
             allowNull : true,
         },
 
+        password : {
+            type : DataTypes.STRING(64),
+            allowNull : true,
+        },
+
+        salt : {
+            type : DataTypes.STRING(64),
+            allowNull : true,
+        },
+
+
+        nickname : {
+            type : DataTypes.STRING(40),
+            allowNull : false,
+        },
 
         provider : {
             type : DataTypes.STRING(40),
@@ -25,11 +33,33 @@ module.exports = (sequelize, DataTypes)=>(
             defaultValue : 'local',
         },
 
-
-        snsId : {
-            type : DataTypes.STRING(30),
-            allowNull : true,
+        status : {
+            type : DataTypes.TINYINT(1),
+            allowNull : false,
+            defaultValue : 1,
         },
+
+        role : {
+            type : DataTypes.TINYINT(1),
+            allowNull : false,
+            defaultValue : 1,
+        },
+
+        p_photo : {
+            type : DataTypes.STRING(100),
+        },
+
+        gender : {
+            type : DataTypes.TINYINT(1),
+            allowNull : false,
+            defaultValue : 1, 
+        },
+
+        accessedAt : {
+            type : DataTypes.DATE,
+            allowNull : false,
+            defaultValue : sequelize.literal('now()'),
+        }
     
     },
     

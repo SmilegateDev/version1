@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { User } = require('../models');
 
@@ -14,11 +15,14 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
       req.flash('joinError', '이미 가입된 이메일입니다.');
       return res.redirect('/join');
     }
-    const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
+    let salt = Math.round((new Data().valueOf() * Math.random())) + "";
+    //const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
+    let hash = crypto.createHash("sha512").update(password + salt).digest("hex");
     await User.create({
       email,
       nick,
       password: hash,
+      salt : salt,
     });
     return res.redirect('/');
   } catch (error) {
