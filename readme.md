@@ -64,3 +64,7 @@
 ## TypeError: User.save is not a function
   - <https://sequelize.org/master/manual/model-instances.html>  여기를 참고하면 await 를 search를 한 상태로 레코드 업데이트를 할수 있는데 await를 못씀
   - 그래서 어쩔수 없이 두번 쿼리를 친다....
+
+
+## Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
+  - test 코드에서 오류나서 그냥 반응 못하고 계속 대기타니까 2000ms 넘어가서 생긴 오류
