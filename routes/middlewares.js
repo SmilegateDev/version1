@@ -18,7 +18,7 @@ exports.isNotLoggedIn = (req, res, next ) => {
     }
 
     else{
-        res.redirect('/');
+        res.redirect('/'); //여기 수정해야함
     }
 };
 

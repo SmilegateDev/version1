@@ -52,6 +52,12 @@
 &nbsp;
 &nbsp;
 
+# jwt refresh token implicity
+  - <https://solidgeargroup.com/refresh-token-with-jwt-authentication-node-js/>
+
+&nbsp;
+&nbsp;
+
 # TDD
  - mocha : <https://heropy.blog/2018/03/16/mocha/>
  - supertest(API test) : <https://velog.io/@wimes/node.js-REST-API-%EC%84%9C%EB%B2%84-%EB%A7%8C%EB%93%A4%EA%B8%B0-5.-TDD-5hk418e6xu>
