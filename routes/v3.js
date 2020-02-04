@@ -7,6 +7,7 @@ const { verifyToken, apiLimiter } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
+
 const mongoPost = require('../schemas/post'); 
 
 const router = express.Router();
@@ -24,28 +25,13 @@ const router = express.Router();
 
 router.use(cors());
 
-router.post('/token', apiLimiter, async (req, res) => {
-    const { clientSecret } = req.body;
+router.post('/token', isLoggedIn, apiLimiter, async (req, res) => {
+    const { nickname, id } = req.body;
 
     try{
-        const domain = await Domain.findOne({
-            where : { clientSecret },
-            include : { 
-                model : User,
-                attribute : [ 'nick', 'id' ],
-            },
-        });
-
-        if(!domain){
-            return res.status(401).json({
-                code : 401,
-                message : '등록되지 않는 도메인 입니다.',
-            });
-        }
-
         const token = jwt.sign({
-            id : domain.user.id,
-            nick :domain.user.nick,
+            id : id,
+            nickname : nickname,
         },
         process.env.JWT_SECRET,
         {
