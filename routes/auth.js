@@ -74,6 +74,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         const token = jwt.sign({
             id : user.id,
             nickname : user.nickname,
+            user : user.status,
         },
         process.env.JWT_SECRET,
         {

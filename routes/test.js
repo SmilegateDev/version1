@@ -5,6 +5,8 @@ const url = require('url');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { User } = require('../models');
@@ -55,6 +57,7 @@ router.post('/join_test', isNotLoggedIn, async (req, res, next) => {
       hash,
       salt,
     });
+
   } catch (error) {
     console.error(error);
     return next(error);
@@ -158,6 +161,66 @@ router.get('/redis_test', function(req, res, next) {
   });
 
 });
+
+
+//여기서부터
+router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
+  const { uid, nickname, password } = req.body;
+  console.log("debug");
+  try {
+    const exUser = await User.findOne({ where: { uid } });
+    if (exUser) {
+      req.flash('joinError', '이미 가입된 이메일입니다.');
+      return res.redirect(200, '/join');
+    }
+    let salt = Math.round((new Date().valueOf() * Math.random())) + "";
+    //const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
+    let hash = crypto.createHash("sha512").update(password + salt).digest("hex");
+    await User.create({
+      uid,
+      nickname,
+      password: hash,
+      salt : salt,
+    });
+    res.json({
+      code : 200,
+      uid,
+      nickname,
+      password,
+      hash,
+      salt,
+    });
+
+    var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
+    client.set(nickname, emailKey, "EX", 60*60*24, function(err, response){
+        console.log(response);
+    });
+
+
+
+
+    client.get(nickname, function(err, response){
+      if(response === emailKey){
+        return res.status(200).send();
+      }
+      else{
+        return res.status(400).send();
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+
+router.get('/redis_auth_test:token', function(req, res, next) {
+
+
+
+});
+
 
 
 module.exports = router;

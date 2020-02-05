@@ -26,12 +26,13 @@ const router = express.Router();
 router.use(cors());
 
 router.post('/token', isLoggedIn, apiLimiter, async (req, res) => {
-    const { nickname, id } = req.body;
+    const { nickname, id, status } = req.body;
 
     try{
         const token = jwt.sign({
             id : id,
             nickname : nickname,
+            status : status,
         },
         process.env.JWT_SECRET,
         {
