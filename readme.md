@@ -74,3 +74,17 @@
 
 ## Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
   - test 코드에서 오류나서 그냥 반응 못하고 계속 대기타니까 2000ms 넘어가서 생긴 오류
+
+## 비동기에 의해 일어난 오류
+  ~~~ javascript
+    if(test === response){
+      return res.status(200).send();
+    }
+    else{
+      return res.status(400).send();
+    }
+
+    return res.status(400).send();
+  ~~~
+
+  위와 같은 경우에 test와 response가 맞아도 비동기에 의해 맨 밑에 있는 res.status(400).send()가 먼저 실행되어버릴 수 있다.

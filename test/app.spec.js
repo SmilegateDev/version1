@@ -75,4 +75,15 @@ describe('Basic Testing /test', ()=>{
              
      });
 
+     it('GET redis_test should return 200 status code', (done) => {
+        request(app)
+             .get('/test/redis_test')
+             .expect(200)
+             .end ( (err, res) => {
+                 if(err) throw err;
+                 done();
+             });
+             
+     });
+
 });

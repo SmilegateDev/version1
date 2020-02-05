@@ -8,9 +8,12 @@ const crypto = require('crypto');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { verifyToken, apiLimiter } = require('./middlewares');
 const { User } = require('../models');
-var mongoUser = require('../schemas/user');
-const router = express.Router();
+const client = require('../cache_redis');
 
+var mongoUser = require('../schemas/user');
+
+
+const router = express.Router();
 
 
 //Mongo DB test
@@ -25,6 +28,7 @@ router.get('/mongo_test', function(req, res, next) {
     });
 });
 
+//join test
 router.post('/join_test', isNotLoggedIn, async (req, res, next) => {
   const { uid, nickname, password } = req.body;
   console.log("debug");
@@ -58,6 +62,7 @@ router.post('/join_test', isNotLoggedIn, async (req, res, next) => {
 });
 
 
+//login_test
 router.post('/login_test', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
@@ -82,6 +87,7 @@ router.post('/login_test', isNotLoggedIn, (req, res, next) => {
 });
 
 
+//token_test
 router.post('/token_test', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
     if (authError) {
@@ -133,8 +139,25 @@ router.post('/token_test', isNotLoggedIn, (req, res, next) => {
 
 
 
+//redis module test
+router.get('/redis_test', function(req, res, next) {
+  let test = "miss";
+  
+  client.set("miss", "miss", function(err, response){
+  });
+  client.get("miss", function(err, response){
+    console.log(test + response);
+    
+    if(test === response){
+      return res.status(200).send();
+    }
+    else{
+      return res.status(400).send();
+    }
 
+  });
 
+});
 
 
 module.exports = router;

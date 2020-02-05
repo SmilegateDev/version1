@@ -33,4 +33,4 @@ client.get("good", function(err, response) {
     console.log(response);
 });
 
-module.exports = redis;
+module.exports = client;
