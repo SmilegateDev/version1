@@ -131,4 +131,10 @@ router.post('/token_test', isNotLoggedIn, (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 
+
+
+
+
+
+
 module.exports = router;
