@@ -94,3 +94,6 @@
 ## MISCONF Redis is configured to save RDB snapshots
   - redis DB오류, 인스턴스를 실행도중에 data 값을 버리지 못했을때 생기는 오류이다
   - 단순히 캐쉬서버로 쓸거면 config set stop-writes-on-bgsave-error no 를 클라이언트 쪽으로 연결해서 명령어를 치면 수리가 된다
+
+
+## 로그인할때 토큰을 발급해주고 따로 /token 도메인을 만들어서 리프레쉬 토큰이 있는지 검사
