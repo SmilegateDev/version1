@@ -88,3 +88,9 @@
   ~~~
 
   위와 같은 경우에 test와 response가 맞아도 비동기에 의해 맨 밑에 있는 res.status(400).send()가 먼저 실행되어버릴 수 있다.
+
+
+
+## MISCONF Redis is configured to save RDB snapshots
+  - redis DB오류, 인스턴스를 실행도중에 data 값을 버리지 못했을때 생기는 오류이다
+  - 단순히 캐쉬서버로 쓸거면 config set stop-writes-on-bgsave-error no 를 클라이언트 쪽으로 연결해서 명령어를 치면 수리가 된다

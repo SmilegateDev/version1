@@ -165,7 +165,7 @@ router.get('/redis_test', function(req, res, next) {
 });
 
 
-//여기서부터
+//join_redis_test
 router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
   const { uid, nickname, password } = req.body;
   console.log("debug");
@@ -193,8 +193,9 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
       salt,
     });
 
-    var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
-    client.set(nickname, emailKey, "EX", 60*60*24, function(err, response){
+    //var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
+    emailKey = "abcde";
+    client.set(emailKey, nickname, "EX", 60*60*24, function(err, response){
         console.log(response);
     });
 
@@ -229,11 +230,8 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
     
     });
 
-
-
-
-    client.get(nickname, function(err, response){
-      if(response === emailKey){
+    client.get(emailKey, function(err, response){
+      if(response === nickname){
         return res.status(200).send();
       }
       else{
@@ -242,14 +240,27 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
     });
 
   } catch (error) {
+    return res.status(400).send();
     console.error(error);
     return next(error);
   }
 });
 
 
-router.get('/redis_auth_test:token', function(req, res, next) {
-  
+router.get('/confirmEmail_test',function (req, res) {
+  client.get(req.query.key, function(err, response){
+    User.update({status : 2}, {where : {nickname : response}});
+    if(response == "test"){
+      return res.status(200).send();
+    }
+    
+    client.del(req.query.key);
+
+  });
+
+
+
+
 });
 
 

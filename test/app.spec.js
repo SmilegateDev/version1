@@ -2,6 +2,7 @@ const should = require('should');
 const request = require('supertest');
 const assert = require('assert');
 const app = require('../app');
+const client = require('../cache_redis');
 
 describe('Basic Testing /test', ()=>{
     it('GET mongo_test should return 200 status code', (done) =>{
@@ -64,7 +65,7 @@ describe('Basic Testing /test', ()=>{
         request(app)
              .post('/test/token_test')
              .send({
-                 uid : "tes12t@test12.com",
+                 uid : "tes213@test12.com",
                  password : "dsfdsdsfdsfs213d",
              })
              .expect(400)
@@ -85,5 +86,33 @@ describe('Basic Testing /test', ()=>{
              });
              
      });
+
+     it('POST join_redis test should return 200 status code', (done) => {
+        request(app)
+             .post('/test/join_redis_test')
+             .send({
+                 nickname : "test",
+                 uid : "tes32131233@test.com",
+                 password : "dsfdsdsfdsfsd",
+             })
+             .expect(200)
+             .end ( (err, res) => {
+                 if(err) throw err;
+                 done();
+             });
+             
+     }).timeout(10000);
+
+     it('GET confirmEmail test should return 200 status code', (done) => {
+        request(app)
+             .get('/test/confirmEmail_test?key=abcde')
+             .expect(200)
+             .end ( (err, res) => {
+                 if(err) throw err;
+                 done();
+             });
+             
+     });
+
 
 });
