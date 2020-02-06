@@ -6,6 +6,7 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+//const smtpTransport = require('nodemailer-smtp-transport');
 
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { verifyToken, apiLimiter } = require('./middlewares');
@@ -148,6 +149,7 @@ router.get('/redis_test', function(req, res, next) {
   
   client.set("miss", "miss", function(err, response){
   });
+
   client.get("miss", function(err, response){
     console.log(test + response);
     
@@ -197,6 +199,37 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
     });
 
 
+    var smtpTransport = nodemailer.createTransport(smtpTransport({
+      service : 'Gmail',
+      host : 'smtp.gmail.com',
+      auth : {
+        user : process.env.GMAIL_ID,
+        pass : process.env.GMAIL_PASS,
+      }
+    }))
+    .then(result => {
+      var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
+      var mailOpt = {
+        from : process.env.GMAIL_ID,
+        to : 'test@test.com',
+        subject : 'Emial verify',
+        html : '<h1>For verifing, Please click the link</h1><br>' + url
+      };
+
+      smtpTransport.sendMail(mailOpt, function(err, res){
+        if(err){
+          console.log(err);
+        }
+        else{
+          console.log('emial has been sent');
+        }
+        smtpTransport.close();
+
+      });
+    
+    });
+
+
 
 
     client.get(nickname, function(err, response){
@@ -216,9 +249,7 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
 
 
 router.get('/redis_auth_test:token', function(req, res, next) {
-
-
-
+  
 });
 
 
