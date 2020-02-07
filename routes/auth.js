@@ -9,6 +9,48 @@ const client = require('../cache_redis');
 
 const router = express.Router();
 
+
+function createEmailkey(nickname, email){
+  var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
+  client.set(emailKey, nickname, "EX", 60*60*24, function(err, response){
+      console.log(response);
+  });
+
+
+  var smtpTransport = nodemailer.createTransport({
+    service : 'gmail',
+    auth : {
+      user : process.env.GMAIL_ID,
+      pass : process.env.GMAIL_PASS,
+    }
+  });
+
+  var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
+  var mailOpt = {
+    from : process.env.GMAIL_ID,
+    to : email,
+    subject : 'Emial verify',
+    html : '<h1>For verifing, Please click the link</h1><br>' + url
+  };
+
+  smtpTransport.sendMail(mailOpt, function(err, res){
+    if(err){
+      console.log(err);
+    }
+
+
+    else{
+      console.log('email has been sent');
+    }
+
+    console.log('success email')
+    smtpTransport.close();
+
+  });
+
+
+}
+
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
   const { email, nickname, password } = req.body;
   try {
@@ -27,41 +69,14 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
       salt : salt,
     });
 
-    var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
-    client.set(emailKey, nickname, "EX", 60*60*24, function(err, response){
-        console.log(response);
-    });
 
+    createEmailkey(nickname, email);
 
-    var smtpTransport = nodemailer.createTransport(smtpTransport({
-      service : 'Gmail',
-      host : 'smtp.gmail.com',
-      auth : {
-        user : process.env.GMAIL_ID,
-        pass : process.env.GMAIL_PASS,
-      }
-    }))
-    .then(result => {
-      var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
-      var mailOpt = {
-        from : process.env.GMAIL_ID,
-        to : email,
-        subject : 'Emial verify',
-        html : '<h1>For verifing, Please click the link</h1><br>' + url
-      };
+    //임시 만료기간을 닉네임을 통해 확인
+    client.set(nickname, 60*60*24, "EX", 60*60*24, function(err, response){
+    console.log(response);
+  });
 
-      smtpTransport.sendMail(mailOpt, function(err, res){
-        if(err){
-          console.log(err);
-        }
-        else{
-          console.log('emial has been sent');
-        }
-        smtpTransport.close();
-
-      });
-    
-    });
 
     return res.redirect('/');
   } catch (error) {
@@ -69,6 +84,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
     return next(error);
   }
 });
+
 
 
 router.get('/confirmEmail',function (req, res) {
@@ -104,12 +120,21 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         return next(loginError);
       }
 
+      //이메일 인증링크가 만료됬을시에
+      if(!client.get(nickname)){
+        createEmailkey(user.nickname, user.email);
+        return res.status(400).json({
+          code : 400,
+          messgae : '이메일 인증을 해주세요!',
+      });
+      }
+
       //로그인에 성공했으면 JWT 토큰 줘버리기
       try{
         const token = jwt.sign({
             id : user.id,
             nickname : user.nickname,
-            user : user.status,
+            status : user.status,
         },
         process.env.JWT_SECRET,
         {
@@ -134,9 +159,11 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         //캐쉬에 등록
         client.set(refreshToken, token, "EX", 60*60);
 
+
+
         return res.json({
             code : 200,
-            message : '토큰이 발급되었습니다.',
+            message : '토큰이 발급되었습니다.' + message,
             token,
             refreshToken,
         });

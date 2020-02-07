@@ -173,7 +173,7 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
     const exUser = await User.findOne({ where: { uid } });
     if (exUser) {
       req.flash('joinError', '이미 가입된 이메일입니다.');
-      return res.redirect(200, '/join');
+      return res.redirect(300, '/join');
     }
     let salt = Math.round((new Date().valueOf() * Math.random())) + "";
     //const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
@@ -199,39 +199,46 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
         console.log(response);
     });
 
+    client.set(nickname, 60*60*24, "EX", 60*60*24, function(err, response)){
+      console.log(response);
+    }
 
-    var smtpTransport = nodemailer.createTransport(smtpTransport({
-      service : 'Gmail',
-      host : 'smtp.gmail.com',
+
+    var smtpTransport = nodemailer.createTransport({
+      service : 'gmail',
       auth : {
         user : process.env.GMAIL_ID,
         pass : process.env.GMAIL_PASS,
       }
-    }))
-    .then(result => {
-      var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
-      var mailOpt = {
-        from : process.env.GMAIL_ID,
-        to : 'test@test.com',
-        subject : 'Emial verify',
-        html : '<h1>For verifing, Please click the link</h1><br>' + url
-      };
-
-      smtpTransport.sendMail(mailOpt, function(err, res){
-        if(err){
-          console.log(err);
-        }
-        else{
-          console.log('emial has been sent');
-        }
-        smtpTransport.close();
-
-      });
-    
     });
+
+    var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
+    var mailOpt = {
+      from : process.env.GMAIL_ID,
+      to : 'test@test.com',
+      subject : 'Emial verify',
+      html : '<h1>For verifing, Please click the link</h1><br>' + url
+    };
+
+    smtpTransport.sendMail(mailOpt, function(err, res){
+      if(err){
+        console.log(err);
+      }
+
+
+      else{
+        console.log('email has been sent');
+      }
+
+      console.log('success email')
+      smtpTransport.close();
+
+    });
+
 
     client.get(emailKey, function(err, response){
       if(response === nickname){
+        console.log(response);
         return res.status(200).send();
       }
       else{
@@ -250,11 +257,12 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
 router.get('/confirmEmail_test',function (req, res) {
   client.get(req.query.key, function(err, response){
     User.update({status : 2}, {where : {nickname : response}});
-    if(response == "test"){
+    if(response == "test30232232"){
       return res.status(200).send();
     }
-    
-    client.del(req.query.key);
+    else{
+      return res.status(400).send();
+    }
 
   });
 

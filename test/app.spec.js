@@ -91,8 +91,8 @@ describe('Basic Testing /test', ()=>{
         request(app)
              .post('/test/join_redis_test')
              .send({
-                 nickname : "test",
-                 uid : "tes32131233@test.com",
+                 nickname : "test30232232",
+                 uid : "tesf3@test.com",
                  password : "dsfdsdsfdsfsd",
              })
              .expect(200)

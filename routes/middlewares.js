@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const RateLimit = require('express-rate-limit');
 
+const client = require('../cache_redis');
+
 exports.isLoggedIn = (req, res, next) =>{
     if(req.isAuthenticated()){
         next();
@@ -26,6 +28,18 @@ exports.isNotLoggedIn = (req, res, next ) => {
 exports.verifyToken = (req, res, next) => {
     try{
         req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+
+        //이메일인증 제때 안하면 토큰 인증 X
+        if(req.status === 1){
+            if(!client.get(req.nickname)){
+                return res.status(401).json({
+                    code : 401,
+                    messgae : '유효하지 않는 토큰',
+                });
+            }
+        }
+
+
         return next();
     }
     catch(error){
