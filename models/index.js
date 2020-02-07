@@ -8,29 +8,6 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-// let sequelize;
-// if (config.use_env_variable) {
-//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
-// } else {
-//   sequelize = new Sequelize(config.database, config.username, config.password, config);
-// }
-
-// fs
-//   .readdirSync(__dirname)
-//   .filter(file => {
-//     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-//   })
-//   .forEach(file => {
-//     const model = sequelize['import'](path.join(__dirname, file));
-//     db[model.name] = model;
-//   });
-
-// Object.keys(db).forEach(modelName => {
-//   if (db[modelName].associate) {
-//     db[modelName].associate(db);
-//   }
-// });
-
 const sequelize = new Sequelize(
   config.database, config.username, config.password, config,
 );
@@ -41,6 +18,8 @@ db.Sequelize = Sequelize;
 db.User = require('./user')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.Hashtag = require('./hashtag')(sequelize, Sequelize);
+db.Domain = require('./domain')(sequelize, Sequelize);
+
 db.User.hasMany(db.Post);
 db.Post.belongsTo(db.User);
 
@@ -49,17 +28,20 @@ db.Hashtag.belongsToMany(db.Post, {through : 'PostHashtag'});
 
 
 db.User.belongsToMany(db.User, {
-  foreignKey : 'fllowingId',
+  foreignKey : 'followingId',
   as : 'Followers',
   through : 'Follow',
 });
 
 //같은 테이블 끼리 N:M관계임
 db.User.belongsToMany(db.User, {
-  foreignKey : 'fllowerId',
+  foreignKey : 'followerId',
   as : 'Followings',
   through : 'Follow',
 });
+
+db.User.hasMany(db.Domain);
+db.Domain.belongsTo(db.User);
 
 
 module.exports = db;

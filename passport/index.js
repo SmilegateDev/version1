@@ -1,5 +1,10 @@
 const local = require('./localStrategy');
+<<<<<<< HEAD
 const google = require('./googleStrategy');
+=======
+const kakao = require('./kakakoStrategy');
+const sequelize = require('sequelize');
+>>>>>>> back-end1
 const { User } = require('../models');
 const kakao = require('./kakakoStrategy');
 
@@ -13,10 +18,37 @@ module.exports = (passport) => {
     });
 
     //매 요청시 실행됨, 세션에 저장했던 아이디를 받아 DB에서 사용자 정보를 저장
+<<<<<<< HEAD
     passport.deserializeUser((email, done)=> {
         User.findOne({ where : {email} })
+=======
+    passport.deserializeUser((id, done)=>{
+        User.findOne({
+            where : {id},
+            include : [{
+                model : User,
+                attributes : ['id', 'nickname'],
+                as : 'Followers',
+            },
+            {
+                model : User,
+                attributes : ['id', 'nickname'],
+                as : 'Followings',
+            }
+        ],
+        })
+>>>>>>> back-end1
             .then(user => done(null, user))
             .catch(err => done(err));
+        //User.accessedAt = sequelize.literal('now()');
+        User.update({accessedAt: sequelize.literal('now()')}, {where: {uid : id}})
+        .then(result => {
+           res.json(result);
+        })
+        .catch(err => {
+           console.error(err);
+        });
+    
     });
 
     local(passport);
