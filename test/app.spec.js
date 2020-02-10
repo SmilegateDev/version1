@@ -91,11 +91,11 @@ describe('Basic Testing /test', ()=>{
         request(app)
              .post('/test/join_redis_test')
              .send({
-                 nickname : "test30232232",
-                 uid : "tesf3@test.com",
+                 nickname : "test3023222232232222",
+                 uid : "tesf2222222223@test.com",
                  password : "dsfdsdsfdsfsd",
              })
-             .expect(200)
+             .expect(200 || 300)
              .end ( (err, res) => {
                  if(err) throw err;
                  done();
