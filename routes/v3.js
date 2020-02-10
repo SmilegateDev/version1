@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const url = require('url');
 
-const { verifyToken, apiLimiter } = require('./middlewares');
+const { verifyToken, apiLimiter,deprecated } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
@@ -22,6 +22,8 @@ const router = express.Router();
 //       next();
 //     }
 //   });
+
+router.use(deprecated);
 
 router.use(cors());
 

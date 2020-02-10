@@ -27,7 +27,9 @@ const router = express.Router();
 router.use(cors());
 
 router.post('/token', isLoggedIn, apiLimiter, async (req, res) => {
-    const { nickname, id, status, refreshToken } = req.body;
+    
+    const {nickname, id, status} = req.body;
+    const refreshToken = req.body.refreshToken;
 
     try{
         if(refreshToken && client.get(refreshToken)){
@@ -45,7 +47,7 @@ router.post('/token', isLoggedIn, apiLimiter, async (req, res) => {
 
             client.set(refreshToken, token, "EX", 60*60);
 
-            return res.json({
+            return res.status(200).json({
                 code : 200,
                 message : '토큰이 발급되었습니다.',
                 token,
@@ -70,21 +72,6 @@ router.get('/test', verifyToken, apiLimiter, (req, res)=>{
 
 
 router.get('/posts/my', verifyToken, apiLimiter, (req, res)=>{
-    // Post.findAll({where : { userId : req.decoded.id} })
-    //     .then( (posts)=>{
-    //         console.log(posts);
-    //         res.json({
-    //             code : 200,
-    //             payload : posts,
-    //         });
-    //     })
-    //     .catch( (error)=>{
-    //         console.error(error);
-    //         return res.status(500).json({
-    //             code : 500,
-    //             message : '서버 에러',
-    //         });
-    //     } );
 
     mongoPost.find({writer : req.decoded.id}).populate('writer')
         .then((posts) =>{
