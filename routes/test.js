@@ -199,9 +199,9 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
         console.log(response);
     });
 
-    client.set(nickname, 60*60*24, "EX", 60*60*24, function(err, response)){
+    client.set(nickname, 60*60*24, "EX", 60*60*24, function(err, response){
       console.log(response);
-    }
+    });
 
 
     var smtpTransport = nodemailer.createTransport({
@@ -257,7 +257,7 @@ router.post('/join_redis_test', isNotLoggedIn, async (req, res, next) => {
 router.get('/confirmEmail_test',function (req, res) {
   client.get(req.query.key, function(err, response){
     User.update({status : 2}, {where : {nickname : response}});
-    if(response == "test30232232"){
+    if(response == "test3023222232232222"){
       return res.status(200).send();
     }
     else{

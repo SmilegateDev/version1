@@ -3,6 +3,7 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const { User } = require('../models');
 const client = require('../cache_redis');
@@ -10,7 +11,7 @@ const client = require('../cache_redis');
 const router = express.Router();
 
 
-function createEmailkey(nickname, email){
+function createEmailkey(nickname, uid){
   var emailKey = crypto.randomBytes(256).toString('hex').substr(100, 5);
   client.set(emailKey, nickname, "EX", 60*60*24, function(err, response){
       console.log(response);
@@ -25,10 +26,10 @@ function createEmailkey(nickname, email){
     }
   });
 
-  var url = 'http://localhost:8002/test/confirmEmail_test'+'?key='+emailKey;
+  var url = 'http://localhost:8002/auth/confirmEmail'+'?key='+emailKey;
   var mailOpt = {
     from : process.env.GMAIL_ID,
-    to : email,
+    to : uid,
     subject : 'Emial verify',
     html : '<h1>For verifing, Please click the link</h1><br>' + url
   };
@@ -52,24 +53,29 @@ function createEmailkey(nickname, email){
 }
 
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
-  const { email, nickname, password } = req.body;
+  const { uid, nickname, password } = req.body;
   try {
-    const exUser = await User.findOne({ where: { email } });
+    const exUser = await User.findOne({ where: { uid } });
     if (exUser) {
+<<<<<<< HEAD
       res.render('map',{joinError: '이미 가입된 이메일입니다.'});
+=======
+      req.flash('joinError', '이미 가입된 이메일입니다.');
+      return res.status(400).send("이미 가입된 메일입니다.");
+>>>>>>> back-end1
     }
-    let salt = Math.round((new Data().valueOf() * Math.random())) + "";
+    let salt = Math.round((new Date().valueOf() * Math.random())) + "";
     //const hash = await bcrypt.hash(password, 12); //여기에 SALT를 써야함
     let hash = crypto.createHash("sha512").update(password + salt).digest("hex");
     await User.create({
-      email,
+      uid,
       nickname,
       password: hash,
       salt : salt,
     });
 
 
-    createEmailkey(nickname, email);
+    await createEmailkey(nickname, uid);
 
     //임시 만료기간을 닉네임을 통해 확인
     client.set(nickname, 60*60*24, "EX", 60*60*24, function(err, response){
@@ -105,13 +111,16 @@ router.get('/confirmEmail',function (req, res) {
 
 router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => {
+    console.log("authError");
     if (authError) {
+      console.log("authError");
       console.error(authError);
       return next(authError);
     }
+
     if (!user) {
       req.flash('loginError', info.message);
-      return res.redirect(400, '/');
+      return res.status(500).send('Login Error');
     }
     return req.login(user, (loginError) => {
       if (loginError) {
@@ -120,8 +129,8 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
       }
 
       //이메일 인증링크가 만료됬을시에
-      if(!client.get(nickname)){
-        createEmailkey(user.nickname, user.email);
+      if(!client.get(user.uid)){
+        createEmailkey(user.nickname, user.uid);
         return res.status(400).json({
           code : 400,
           messgae : '이메일 인증을 해주세요!',
@@ -156,16 +165,15 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
         );
 
         //캐쉬에 등록
-        client.set(refreshToken, token, "EX", 60*60);
+        client.set(refreshToken, token, "EX", 60*60*24*30);
 
 
-
-        return res.json({
+        return res.status(200).json({
             code : 200,
-            message : '토큰이 발급되었습니다.' + message,
+            message : '토큰이 발급되었습니다.',
             token,
             refreshToken,
-        });
+        }).send();
     }
 
     catch(error){
@@ -180,7 +188,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     
     return res.status(200);
 
-  })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
+  })(req, res, next);
 });
 
 

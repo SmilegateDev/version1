@@ -3,13 +3,15 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const url = require('url');
 
-const { verifyToken, apiLimiter } = require('./middlewares');
+const { verifyToken, apiLimiter,deprecated } = require('./middlewares');
 const { Domain, User, Post, Hashtag } = require('../models');
 
 
 const mongoPost = require('../schemas/post'); 
 
 const router = express.Router();
+
+router.use(deprecated);
 
 // router.use(async (req, res, next) => {
 //     const domain = await Domain.findOne({
